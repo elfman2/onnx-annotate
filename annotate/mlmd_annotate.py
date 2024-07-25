@@ -46,7 +46,7 @@ from onnx import (
     OperatorStatus,
     STABLE
 )
-
+from TFM.tfmspec import Sdoc
 
 class bcolors:
     HEADER = '\033[95m'
@@ -77,6 +77,7 @@ if __name__ == "__main__":
     parser.add_argument('--onnxscript', nargs=1,help='generates an onnx script from the model. Use of --external_data reduces the script size')
     parser.add_argument('--disable_postcheck', action='store_true',help='Disables the model post checking (to be able to debug through )')
     parser.add_argument('--remove_dead_trees', action='store_true',help='Remove sub trees which do not contribute to output')
+    parser.add_argument('--sdoc_trace', nargs=2,help='Export strictdoc trace in file argument ')
     parser.add_argument('--output', help='output modified onnx model')
     args = parser.parse_args()
 
@@ -258,6 +259,12 @@ if __name__ == "__main__":
     if args.external_data:
         from onnx.external_data_helper import convert_model_to_external_data
         convert_model_to_external_data(onnx_model, all_tensors_to_one_file=True, location=args.external_data[0] , size_threshold=10, convert_attribute=True)
+
+    if args.sdoc_trace:
+        doc = Sdoc(args.sdoc_trace[1],'1','PUBLIC')
+        for i,n in enumerate(onnx_model.graph.node):
+            doc.new_req('MLMD_REQ_'+str(i),n.name,'ONNX node',n.doc_string)
+        doc.write(args.sdoc_trace[0])
 
     if args.output:
         onnx.save(onnx_model,args.output)

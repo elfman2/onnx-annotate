@@ -57,15 +57,28 @@ class MyModel(nn.Module):
         x = self.l(x)
         return x
 
-torch_model = MyModel()
-torch_input = torch.randn(1,1,150,150)
 
-onnx_program = torch.onnx.dynamo_export(torch_model, torch_input)
-''' dynamo export generates lots of burden. the remove_unused scripts cleans up '''
-remove_unused.remove_unused_nodes(onnx_program.model_proto)
-onnx.checker.check_model(onnx_program.model_proto)
-onnx_program.save(sys.argv[1])
+def export_torch_onnx():
+    torch_model = MyModel()
+    torch_input = torch.randn(1,1,150,150)
 
-onnx_program=torch.onnx.export(torch_model,torch_input,sys.argv[2],do_constant_folding=True,input_names = ['input'],output_names = ['output'])
-onnx_program = onnx.load(sys.argv[2])
-onnx.checker.check_model(onnx_program)
+    onnx_program = torch.onnx.dynamo_export(torch_model, torch_input)
+    ''' dynamo export generates lots of burden. the remove_unused scripts cleans up '''
+    remove_unused.remove_unused_nodes(onnx_program.model_proto)
+    onnx.checker.check_model(onnx_program.model_proto)
+    onnx_program.save(sys.argv[1])
+
+    onnx_program=torch.onnx.export(torch_model,torch_input,sys.argv[2],do_constant_folding=True,input_names = ['input'],output_names = ['output'])
+    onnx_program = onnx.load(sys.argv[2])
+    onnx.checker.check_model(onnx_program)
+
+def main():
+    '''
+    argv1: Torch legacy exported ONNX model file path 
+    argv2: Torch dynamo exported ONNX model file path 
+    argv3: specification output directory
+    '''
+    export_torch_onnx()
+
+if __name__ == '__main__':
+    main()

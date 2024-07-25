@@ -1,0 +1,157 @@
+[DOCUMENT]
+TITLE: MLMD ONNX standard
+VERSION: 1
+CLASSIFICATION: PUBLIC
+REQ_PREFIX: MLMD-ONNX-STD-RULE-
+
+[GRAMMAR]
+ELEMENTS:
+- TAG: TEXT
+  FIELDS:
+  - TITLE: UID
+    TYPE: String
+    REQUIRED: False
+  - TITLE: STATEMENT
+    TYPE: String
+    REQUIRED: True
+- TAG: RULE
+  FIELDS:
+  - TITLE: UID
+    TYPE: String
+    REQUIRED: False
+  - TITLE: TITLE
+    TYPE: String
+    REQUIRED: False
+  - TITLE: STATEMENT
+    TYPE: String
+    REQUIRED: False
+  - TITLE: EXAMPLE
+    HUMAN_TITLE: Example of compliance
+    TYPE: String
+    REQUIRED: False
+  - TITLE: RATIONALE
+    HUMAN_TITLE: RATIONALE
+    TYPE: String
+    REQUIRED: False
+  RELATIONS:
+  - TYPE: Parent
+    ROLE: to trace objective
+- TAG: REQUIREMENT
+  FIELDS:
+  - TITLE: UID
+    TYPE: String
+    REQUIRED: False
+  - TITLE: TITLE
+    TYPE: String
+    REQUIRED: False
+  - TITLE: STATEMENT
+    TYPE: String
+    REQUIRED: False
+  RELATIONS:
+  - TYPE: Parent
+    ROLE: to trace objective
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-1
+TITLE: MLMD input and output meaning
+STATEMENT: >>>
+The MLMD input and output shape dimensions shall be functionally described.
+<<<
+EXAMPLE: >>>
+Yolov10 output shape 300x6 defines an 300 dim array of bounding box, each bounding box is defined by 6 attributes: box center x,box center y,box width,box height,object class probability,object class identifier. Bounding box value range : [0,1]. Class identifier range: [0,number of class - 1].
+<<<
+RATIONALE: >>>
+Pre and Post processing will interface with MLMD input and output
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-2
+TITLE: Traceability
+STATEMENT: >>>
+The MLMD shall keep track of links to the training framework model artefacts.
+Each MLMD Node, Tensor of the DAG shall provide a documentation attribute for this purpose.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-3
+TITLE: Operators
+STATEMENT: >>>
+The MLMD shall define mathematical and linear algebra operators unambiguous semantic.
+Operators shall be polymorphic,i.e. adapt to tensor shapes.
+Operators can be parameterized by design time attributes.
+Operator changes are version controlled.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-4
+TITLE: Dataflow
+STATEMENT: >>>
+Tensors data flow across MLMD nodes shall be specified in the form of a DAG.
+Each DAG Node is a design time instance of Operator (dynamic binding is excluded), and defined by its constant attributes.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-5
+TITLE: Nodes
+STATEMENT: >>>
+Each DAG Node shall be unique (uid).
+Any Node input and output shall either be connected to other nodes of the DAG, or be defined as constant parameter (weight and bias).
+Any node which can be computed ahead of time (constant folding) shall be fused to other nodes.
+Nodes which are linked to elmentwise Operators (ex: Add, Mul, Relu, Sigmoid...) shall be fused to previous node.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-6
+TITLE: Node operator reference
+STATEMENT: >>>
+Each MLMD node shall reference unambiguously the operator and its version.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-7
+TITLE: Tensors
+STATEMENT: >>>
+The MLMD tensors shall be defined, their base data type
+{float64, float32,int16, int8...}, data type coding standard (IEEE754), their shape, i.e. the size of each dimension and the meaning of each dimension.
+The shape convention shall be channel first (CHW).
+Each tensor, node shall be uniquely identified.
+Output tensor values are modified at runtime through nodes operator.
+Some input tensor instances are made of constant values learned by the training process, and known as model parameters.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-8
+TITLE: Serialization
+STATEMENT: >>>
+The MLMD shall be serialized and stored in one data file, and this file format shall be described, and versioned.
+The file might be split in fragments: in this case, there shall not exist any ambiguity that the fragments belong to a unique MLMD instance.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-9
+TITLE: Integrity
+STATEMENT: >>>
+The MLMD integrity (checksum) shall be set at design time before MLMD verification process and shall be verified on target system.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-10
+TITLE: Verifiability
+STATEMENT: >>>
+The MLMD shall be reviewed against this MLMD standard in the verification process. Some human readable means shall be available to inspect any MLMD element.
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-11
+TITLE: Deployment
+STATEMENT: >>>
+The MLMD subgraph (MLMID) shall be allocated to HW items.
+MLMID used operators are compatible with the allocated HW item and are supported by the implementation framework (ex: code generator).
+<<<
+
+[RULE]
+UID: MLMD-ONNX-STD-RULE-12
+TITLE: Hyper parameter
+STATEMENT: >>>
+The MLMD shall support storage of hyper parameters.
+<<<

@@ -1,0 +1,12 @@
+[project]
+title = "ARP-6983 standards"
+features = [
+  "TABLE_SCREEN",
+  "TRACEABILITY_SCREEN",
+  "DEEP_TRACEABILITY_SCREEN",
+  "TRACEABILITY_MATRIX_SCREEN"
+]
+
+[server]
+host = "127.0.0.1"
+port = 8081

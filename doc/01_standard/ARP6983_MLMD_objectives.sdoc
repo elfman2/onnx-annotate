@@ -1,0 +1,93 @@
+[DOCUMENT]
+TITLE: ARP-6983 MLMD objectives
+VERSION: 1
+CLASSIFICATION: SAE-EUROCAE
+REQ_PREFIX: ARP6983-MLMD-OBJ-
+ROOT: True
+
+[GRAMMAR]
+ELEMENTS:
+- TAG: TEXT
+  FIELDS:
+  - TITLE: UID
+    TYPE: String
+    REQUIRED: False
+  - TITLE: STATEMENT
+    TYPE: String
+    REQUIRED: True
+- TAG: OBJECTIVE
+  FIELDS:
+  - TITLE: UID
+    TYPE: String
+    REQUIRED: False
+  - TITLE: TITLE
+    TYPE: String
+    REQUIRED: False
+  - TITLE: STATEMENT
+    TYPE: String
+    REQUIRED: False
+  - TITLE: EXAMPLE
+    HUMAN_TITLE: Example of objective compliance
+    TYPE: String
+    REQUIRED: False
+  RELATIONS:
+  - TYPE: Parent
+
+[OBJECTIVE]
+UID: ARP6983-MLMD-OBJ-1
+TITLE: MLMD architecture
+STATEMENT: >>>
+1. MLMD architecture is described.
+2. MLMD hyper parameters are described.
+3. MLMD parameters are described.
+4. MLMD and ML data processing description are consistent
+5. MLMD integrity
+<<<
+EXAMPLE: >>>
+1. the DAG structure is defined, the nodes operator type are defined, and tensors type and shape are defined.
+2. the learning rate, the random seed, the gradient descent algorithm
+3. the weight and biases of each DAG node are defined.
+4. MLMD interfaces (input and output) are compatible with other software components, in particular ML pre and post processing.
+5. MLMD is protected from change by SHA1 or CRC.
+<<<
+
+[OBJECTIVE]
+UID: ARP6983-MLMD-OBJ-2
+TITLE: MLMD semantic
+STATEMENT: >>>
+The analytical/algorithmic syntax and semantic of the MLMD are described, including all MLMD internal operation that are necessary to compute the output(s) of the MLMD from its inputs.
+<<<
+
+[OBJECTIVE]
+UID: ARP6983-MLMD-OBJ-3
+STATEMENT: >>>
+1. Model replication criterion are defined.
+2. Model execution environment is described.
+3. The MLMD is compatible with the execution environment.
+<<<
+EXAMPLE: >>>
+1. approximate replication requires the specification of $\epsilon$, which will be used for (on-target) verification process.
+2. the target processor is defined, the intended use of on chip accelerators are identified, the target compiler and tools used to generate executable code are defined.
+3. the MLMD can be implemented and computed by the intended HW items.
+<<<
+
+[OBJECTIVE]
+UID: ARP6983-MLMD-OBJ-4
+TITLE: MLMD traceability
+STATEMENT: >>>
+MLMD is traceable (bidirectional) to training framework model.
+<<<
+
+[OBJECTIVE]
+UID: ARP6983-MLMD-OBJ-5
+TITLE: MLMD design standard
+STATEMENT: >>>
+MLMD conforms to MLMD design standard.
+<<<
+
+[OBJECTIVE]
+UID: ARP6983-MLMD-OBJ-6
+TITLE: MLMD verifiability
+STATEMENT: >>>
+MLMD shall be reviewed against this MLMD standard in the verification process. Some human readable means shall be available to inspect any MLMD element.
+<<<
