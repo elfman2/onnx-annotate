@@ -24,21 +24,30 @@ import tensorflow as tf
 import sys
 from .tfmspec import Sdoc
 
-def define_cnn():
+class ConvPool(keras.layers.Layer):
+    '''
+    Convolutional and Maxpool layer group
+    '''
+    def __init__(self,prefix,channel,kernel_size,id):
+        super().__init__(name=(f'{prefix}CONVPOOL{id}'))
+        self.conv = keras.layers.Conv2D(channel, kernel_size, activation='relu',data_format='channels_first',name=(prefix+'CONV'+str(id)))
+        self.maxpool = keras.layers.MaxPooling2D(pool_size=(2, 2),data_format='channels_first',name=(prefix+'MAXPOOL'+str(id)))
+    def call(self,x):
+        x = self.conv(x)
+        x = self.maxpool(x)
+        return x
+
+def define_cnn(prefix="TFM_KS_"):
     layers = [
-        keras.layers.Conv2D(16, 5, activation='relu',data_format='channels_first',name="TFM_KS_CONV1"),
-        keras.layers.MaxPooling2D(pool_size=(2, 2),data_format='channels_first',name="TFM_KS_MAXPOOL1"),  
-        keras.layers.Conv2D(48, 9, activation='relu',data_format='channels_first',name="TFM_KS_CONV2"),
-        keras.layers.MaxPooling2D(pool_size=(2, 2),data_format='channels_first',name="TFM_KS_MAXPOOL2"),    
-        keras.layers.Conv2D(48, 9, activation='relu',data_format='channels_first',name="TFM_KS_CONV3"),
-        keras.layers.MaxPooling2D(pool_size=(2, 2),data_format='channels_first',name="TFM_KS_MAXPOOL3"),    
-        keras.layers.Conv2D(32, 5, activation='relu',data_format='channels_first',name="TFM_KS_CONV4"),
-        keras.layers.MaxPooling2D(pool_size=(2, 2),data_format='channels_first',name="TFM_KS_MAXPOOL4"),  
-        keras.layers.Reshape((512,),name="TFM_KS_FLATTEN"),  
-        keras.layers.Dense(64,activation="relu",bias_initializer='random_normal',name="TFM_KS_DENSE1"),
-        keras.layers.Dense(1,activation="sigmoid",bias_initializer='random_normal',name="TFM_KS_DENSE2")
+        ConvPool(prefix,16,5,1),
+        ConvPool(prefix,48,9,2),
+        ConvPool(prefix,48,9,3),
+        ConvPool(prefix,32,5,4),
+        keras.layers.Reshape((512,),name=f'{prefix}FLATTEN'),  
+        keras.layers.Dense(64,activation="relu",bias_initializer='random_normal',name=f"{prefix}DENSE1"),
+        keras.layers.Dense(1,activation="sigmoid",bias_initializer='random_normal',name=f"{prefix}TFM_KS_DENSE2")
     ]
-    full_model = keras.Sequential(layers,name="TFM_KS_SEQUENTIAL")
+    full_model = keras.Sequential(layers,name=f"{prefix}SEQUENTIAL")
     full_model.output_names=['y']
     full_model.compile()
     return full_model
